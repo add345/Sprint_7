@@ -3,10 +3,11 @@ import requests
 import json
 import urls
 import helpers
+import allure
 
 class TestCreatingOrder:
 
-#  @allure.title (Создание заказа, можно указать один из цветов — BLACK или GREY)
+    @allure.title('Создание заказа, можно указать один из цветов — BLACK или GREY')
     @pytest.mark.parametrize('color', ['', [], ["GREY"], ["BLACK"], ["GREY", "BLACK"]])
     def test_creating_an_order_black_grey(self, color, order_data):
         payload = order_data
@@ -22,8 +23,7 @@ class TestCreatingOrder:
 
 
 
-#  @allure.title (Создание заказа, тело ответа содержит track)
-
+    @allure.title('Создание заказа, тело ответа содержит track')
     def test_response_body_contains_track(self, order_data):
         payload = order_data
         response = requests.post(urls.creating_an_order, data=payload)

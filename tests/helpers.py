@@ -2,6 +2,7 @@ from data import generate_random_string, STANDARD_LOGIN_LENGTH, STANDARD_FIRSTNA
 import requests
 import urls
 import json
+import allure
 
 
 class CourierHelper:
@@ -9,6 +10,7 @@ class CourierHelper:
     couriers = []
 
     @staticmethod
+    @allure.step('Генерируем случайные данные пользователя')
     def create_random_user_data():
         user_data = {"login": generate_random_string(STANDARD_LOGIN_LENGTH),
                      "password": generate_random_string(STANDARD_PASSWORD_LENGTH),
@@ -16,8 +18,8 @@ class CourierHelper:
 
         return user_data
 
-
     @staticmethod
+    @allure.step('Регистрируем курьера')
     def register_courier():
         user_data = CourierHelper.create_random_user_data()
 
@@ -32,6 +34,7 @@ class CourierHelper:
         return user_data
 
     @staticmethod
+    @allure.step('Удаляем курьера')
     def delete_courier(id):
         response = requests.delete(f'{urls.courier}:{id}')
 
@@ -40,8 +43,8 @@ class CourierHelper:
         else:
             return False
 
-
     @staticmethod
+    @allure.step('Удаляем всех курьеров')
     def delete_all_couriers():
 
         for courier in CourierHelper.couriers:
@@ -57,10 +60,12 @@ class OrderHelper:
     orders = []
 
     @staticmethod
+    @allure.step('Запоминаем заказ для последующего удаления')
     def add_order(id):
         OrderHelper.orders.append(id)
 
     @staticmethod
+    @allure.step('Удаляем заказ')
     def delete_order_by_id(id):
         payload = {'track': id}
         response = requests.put(urls.cancel_order, payload)
@@ -70,6 +75,7 @@ class OrderHelper:
             return False
 
     @staticmethod
+    @allure.step('Удаляем все заказы')
     def delete_all_orders():
         for id in OrderHelper.orders:
             OrderHelper.delete_order_by_id(id)
