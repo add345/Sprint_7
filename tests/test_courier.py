@@ -6,20 +6,19 @@ import urls
 
 class TestCourier:
 
-    @allure.title('Тестируем регистрацию курьера')
+    @allure.step('Тестируем регистрацию курьера')
     def test_register_courier(self, random_user_data):
         self.user_data = random_user_data
         response = requests.post(urls.courier, data=self.user_data)
 
-        assert response.status_code == 201
+        assert response.status_code == 201  and response.text == '{"ok":true}'
 
     @allure.title('Проверка: нельзя создать двух одинаковых курьеров')
-    def test_not_create_two_identical_couriers(self, random_user_data):
-        self.user_data = random_user_data
-        response1 = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=self.user_data)
-        response2 = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=self.user_data)
+    def test_not_create_two_identical_couriers(self, random_registered_user_data):
+        self.user_data = random_registered_user_data
+        response = requests.post(urls.courier, data=self.user_data)
 
-        assert response2.status_code == 409
+        assert response.status_code == 409
 
     @allure.title('Без передачи всех обязательных полей создание курьера невозможно')
     @pytest.mark.parametrize('key_ex', ["login", "password"])
@@ -29,25 +28,10 @@ class TestCourier:
         response = requests.post(urls.courier, data=self.user_data_new)
         assert response.status_code == 400
 
-    @allure.title('Успешная регистрация возвращает правильный код ответа')
-    def test_register_returns_the_correct_response_code(self, random_user_data):
-        self.user_data = random_user_data
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=self.user_data)
-        assert response.status_code == 201
-
-
-    @allure.title('Успешный запрос возвращает {"ok":true}')
-    def test_register_returns_the_correct_text(self, random_user_data):
-        self.user_data = random_user_data
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=self.user_data)
-        if response.status_code == 201:
-            print(response.text)
-            assert response.text == '{"ok":true}'
-
     @allure.title('Если одного из полей нет, запрос возвращает ошибку')
     def test_register_courier_without_field(self, random_user_data_negative):
         self.user_data = random_user_data_negative
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=self.user_data)
+        response = requests.post(urls.courier, data=self.user_data)
         assert response.status_code == 400
 
     @allure.title('Если создать пользователя с логином, который уже есть, возвращается ошибка.')

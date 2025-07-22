@@ -14,7 +14,7 @@ class TestLoginCourier:
 
         assert response.status_code == 200
 
-    @allure.title('Логин курьера, для авторизации нужно передать все обязательные поля;')
+    @allure.step('Логин курьера, для авторизации нужно передать все обязательные поля;')
     @pytest.mark.parametrize('key_ex', ["login", "password"])
     def test_courier_can_log_in_required_fields(self, key_ex, registered_user_data):
         self.user_data = registered_user_data
