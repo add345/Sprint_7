@@ -10,7 +10,8 @@ class TestLoginCourier:
     @allure.title('Курьер может авторизоваться')
     def test_courier_can_log_in(self, registered_user_data):
         self.user_data = registered_user_data
-        response = requests.post(urls.login_courier, data=self.user_data)
+        with allure.step('Отправка запроса на логин курьера'):
+            response = requests.post(urls.login_courier, data=self.user_data)
 
         assert response.status_code == 200
 
@@ -20,7 +21,8 @@ class TestLoginCourier:
         self.user_data = registered_user_data
         self.user_data[key_ex] = ''
 
-        response = requests.post(urls.login_courier, data=self.user_data)
+        with allure.step('Отправка запроса на логин курьера'):
+            response = requests.post(urls.login_courier, data=self.user_data)
         assert response.status_code == 400
 
 
@@ -29,7 +31,8 @@ class TestLoginCourier:
     def test_courier_log_in_negative_return_an_error(self, key_ex, registered_user_data):
         payload = registered_user_data
         payload[key_ex] = f'{registered_user_data[key_ex]}1'
-        response = requests.post(urls.login_courier, data=payload)
+        with allure.step('Отправка запроса на логин курьера'):
+            response = requests.post(urls.login_courier, data=payload)
         assert response.status_code == 404
 
 
@@ -39,7 +42,8 @@ class TestLoginCourier:
         self.user_data = registered_user_data
         self.user_data[key_ex] = ''
 
-        response = requests.post(urls.login_courier, data=self.user_data)
+        with allure.step('Отправка запроса на логин курьера'):
+            response = requests.post(urls.login_courier, data=self.user_data)
         assert response.status_code == 400
 
     @allure.title('Логин курьера, если авторизоваться под несуществующим пользователем, запрос возвращает ошибку')
@@ -47,7 +51,8 @@ class TestLoginCourier:
     def test_courier_log_in_non_existent_login_password_return_an_error(self, key_ex, registered_user_data):
         payload = registered_user_data
         payload[key_ex] = f'{registered_user_data[key_ex]}1'
-        response = requests.post(urls.login_courier, data=payload)
+        with allure.step('Отправка запроса на логин курьера'):
+            response = requests.post(urls.login_courier, data=payload)
         assert response.status_code == 404
 
 
@@ -55,10 +60,10 @@ class TestLoginCourier:
     @allure.title('Логин курьера, успешный запрос возвращает id.')
     def test_courier_can_log_in_returns_id(self, registered_user_data):
         self.user_data = registered_user_data
-        response = requests.post(urls.login_courier, data=self.user_data)
+        with allure.step('Отправка запроса на логин курьера'):
+            response = requests.post(urls.login_courier, data=self.user_data)
 
-        if response.status_code == 200:
-            print(json.loads(response.text)['id'])
-            assert 'id' in json.loads(response.text).keys()
+        assert response.status_code == 200
+        assert 'id' in json.loads(response.text).keys()
 
 
