@@ -64,6 +64,16 @@ class OrderHelper:
     def add_order(id):
         OrderHelper.orders.append(id)
 
+
+    @staticmethod
+    @allure.step('Запоминаем заказ для последующего удаления')
+    def add_order_from_json_str(json_str):
+        if 'track' in json.loads(json_str).keys():
+            OrderHelper.orders.append(json.loads(json_str)['track'])
+        else:
+            return False
+
+
     @staticmethod
     @allure.step('Удаляем заказ')
     def delete_order_by_id(id):

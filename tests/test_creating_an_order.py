@@ -15,9 +15,9 @@ class TestCreatingOrder:
         payload['color'] = color
         with allure.step('Отправка запроса на создание заказа'):
             response = requests.post(urls.creating_an_order, data=payload)
+
+        helpers.OrderHelper.add_order_from_json_str(response.text)
         assert response.status_code == 201 and 'track' in json.loads(response.text).keys()
-        id = json.loads(response.text)['track']
-        helpers.OrderHelper.add_order(id)
 
     @allure.title('Создание заказа, без передачи поля color')
     def test_creating_an_order_no_color_field(self):
@@ -25,7 +25,6 @@ class TestCreatingOrder:
         with allure.step('Отправка запроса на создание заказа'):
             response = requests.post(urls.creating_an_order, data=payload)
 
+        helpers.OrderHelper.add_order_from_json_str(response.text)
         assert response.status_code == 201 and 'track' in json.loads(response.text).keys()
-        id = json.loads(response.text)['track']
-        helpers.OrderHelper.add_order(id)
 

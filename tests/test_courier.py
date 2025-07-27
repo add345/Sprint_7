@@ -20,7 +20,9 @@ class TestCourier:
         with allure.step('Отправка повторного запроса регистрации курьера'):
             response = requests.post(urls.courier, data=self.user_data)
 
-        assert response.status_code == 409 and json.loads(response.text)['code'] == 409
+        print(response.text)
+
+        assert response.status_code == 409 and json.loads(response.text)['message'] == 'Этот логин уже используется. Попробуйте другой.'
 
     @allure.title('Без передачи всех обязательных полей создание курьера невозможно')
     @pytest.mark.parametrize('key_ex', ["login", "password"])
@@ -30,7 +32,8 @@ class TestCourier:
         with allure.step('Отправка неполного запроса регистрации курьера'):
             response = requests.post(urls.courier, data=self.user_data_new)
 
-        assert response.status_code == 400 and json.loads(response.text)['code'] == 400
+        print(response.text)
+        assert response.status_code == 400 and json.loads(response.text)['message'] == 'Недостаточно данных для создания учетной записи'
 
     @allure.title('Если одного из полей нет, запрос возвращает ошибку')
     def test_register_courier_without_field(self, random_user_data_negative):
@@ -39,7 +42,8 @@ class TestCourier:
         with allure.step('Отправка неполного запроса регистрации курьера'):
             response = requests.post(urls.courier, data=self.user_data)
 
-        assert response.status_code == 400 and json.loads(response.text)['code'] == 400
+        print(response.text)
+        assert response.status_code == 400 and json.loads(response.text)['message'] == 'Недостаточно данных для создания учетной записи'
 
     @allure.title('Если создать пользователя с логином, который уже есть, возвращается ошибка.')
     def test_not_create_couriers_with_repeat_login(self, random_user_data_repeat_login):
@@ -48,4 +52,5 @@ class TestCourier:
         with allure.step('Отправка запроса регистрации курьера с таким же логином'):
             response2 = requests.post(urls.courier, data=random_user_data_repeat_login[1])
 
-        assert response2.status_code == 409 and json.loads(response2.text)['code'] == 409
+        print(response2.text)
+        assert response2.status_code == 409 and json.loads(response2.text)['message'] == 'Этот логин уже используется. Попробуйте другой.'
